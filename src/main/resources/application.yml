@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  max-http-header-size: 8192
+  compression:
+    min-response-size: 512
+    enabled: true
+    mime-types: text/html,text/css,text/javascript,application/javascript,image/gif,image/png,image/jpg
+  servlet:
+    session:
+      timeout: 86400
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/qiucode-admin?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+
