@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @create: 2020-11-14 20:40
  */
 @Controller
-@RequestMapping
+@RequestMapping("/index")
 public class IndexController {
 
-    @RequestMapping("/")
-    @ResponseBody
+    @RequestMapping
     public String index(){
-        String dev="这是dev分支哦！";
-        return "<h2 style='text-align: center;'>Hello qiucode-admin</h2>";
+        return "index";
     }
 }
