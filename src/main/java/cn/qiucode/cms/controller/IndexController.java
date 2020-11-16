@@ -17,7 +17,6 @@ public class IndexController {
     @RequestMapping("/")
     @ResponseBody
     public String index(){
-        String dev="这是dev分支";
         return "<h2 style='text-align: center;'>Hello qiucode-admin</h2>";
     }
 }
