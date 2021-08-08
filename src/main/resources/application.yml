@@ -15,4 +15,11 @@ spring:
     username: root
     password: root
     type: com.zaxxer.hikari.HikariDataSource
+  #mvc:
+  #  static-path-pattern: /static/
+  #resources:
+  #  static-locations: /static/
 
+mybatis:
+  type-aliases-package: cn.qiucode.cms.entity
+  mapper-locations: classpath*:mappers/**/*.xml

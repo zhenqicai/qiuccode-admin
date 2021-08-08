@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qiucode.cms.dao.AdminUserDao">
+
+    <resultMap id="resultAdminUser" type="cn.qiucode.cms.entity.AdminUser">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="salt" column="salt" />
+    </resultMap>
+
+    <select id="findOne" resultMap="resultAdminUser">
+        select * from qiu_admin where username=#{username} and password=#{password}
+    </select>
+    <select id="findByName" resultType="cn.qiucode.cms.entity.AdminUser">
+        select * from qiu_admin where username=#{username}
+    </select>
+
+</mapper>
