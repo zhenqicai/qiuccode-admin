@@ -17,6 +17,11 @@ public class AdminUser implements Serializable {
     private String password;//后台管理员密码
     private String salt;    //盐值
 
+    private String email; //用户邮箱
+    private Integer status; // 状态 0锁定 1有效
+
+    private String avatar; //用户头像
+
     public Integer getId() {
         return id;
     }
@@ -47,5 +52,29 @@ public class AdminUser implements Serializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

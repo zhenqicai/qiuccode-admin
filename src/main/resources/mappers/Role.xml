@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qiucode.cms.dao.RoleDao">
+
+    <resultMap id="resultRole" type="cn.qiucode.cms.entity.Role">
+        <result column="role_id" jdbcType="DECIMAL" property="roleId" />
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+
+    <select id="countRole" resultType="long">
+        SELECT
+         COUNT(1)
+        FROM
+        qiu_role r
+        WHERE 1 = 1
+        <if test="role.roleName != null and role.roleName != ''">
+            AND r.role_name like CONCAT('%',#{role.roleName},'%')
+        </if>
+    </select>
+
+    <select id="findRoleList" resultType="cn.qiucode.cms.entity.Role" >
+        SELECT
+        r.role_id roleId,
+        r.role_name roleName,
+        r.remark,
+        r.create_time createTime,
+        r.update_time modifyTime,
+        GROUP_CONCAT( rm.menu_id ) menuIds
+        FROM
+        qiu_role r
+        LEFT JOIN qiu_role_menu rm ON ( r.role_id = rm.role_id )
+        WHERE 1 = 1
+        <if test="role.roleName != null and role.roleName != ''">
+            AND r.role_name like CONCAT('%',#{role.roleName},'%')
+        </if>
+        GROUP BY
+        r.role_id  limit #{pageNow},#{pageSize}
+    </select>
+
+
+    <update id="updateById" parameterType="cn.qiucode.cms.entity.Role">
+        UPDATE  qiu_role r set r.role_name = #{roleName},r.remark = #{remark},
+        r.update_time = #{updateTime}
+    </update>
+
+
+</mapper>

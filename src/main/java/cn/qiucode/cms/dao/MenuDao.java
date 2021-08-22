@@ -30,4 +30,11 @@ public interface MenuDao {
      */
     List<Menu> findUserMenus(String username);
 
+    /**
+     * 获取所有菜单数据
+     * @param menu  参数对象
+     * @return  菜单数据集
+     */
+    List<Menu> selectList(Menu menu);
+
 }

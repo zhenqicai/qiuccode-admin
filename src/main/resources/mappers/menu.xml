@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.qiucode.cms.dao.MenuDao">
     <resultMap id="menu" type="cn.qiucode.cms.entity.Menu">
-        <id column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
-        <result column="PARENT_ID" jdbcType="DECIMAL" property="parentId" />
-        <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
-        <result column="URL" jdbcType="VARCHAR" property="url" />
-        <result column="PERMS" jdbcType="VARCHAR" property="perms" />
-        <result column="ICON" jdbcType="VARCHAR" property="icon" />
-        <result column="TYPE" jdbcType="CHAR" property="type" />
-        <result column="SORT" jdbcType="DECIMAL" property="sort" />
-        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <id column="menu_id" jdbcType="DECIMAL" property="menuId" />
+        <result column="parent_id" jdbcType="DECIMAL" property="parentId" />
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="perms" jdbcType="VARCHAR" property="perms" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="type" jdbcType="CHAR" property="type" />
+        <result column="sort" jdbcType="DECIMAL" property="sort" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
     <select id="findUserPermissions" resultMap="menu">
@@ -50,4 +50,14 @@
         ORDER BY
           m.sort
     </select>
+
+    <select id="selectList" resultMap="menu">
+        SELECT * from qiu_menu m
+        WHERE 1 = 1
+        <if test="menuName != null and menuName != ''">
+            AND m.menu_name like CONCAT('%',#{menuName},'%')
+        </if>
+        ORDER BY m.sort
+    </select>
+
 </mapper>

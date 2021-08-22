@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 07/08/2021 21:59:52
+ Date: 22/08/2021 10:43:55
 */
 
 SET NAMES utf8mb4;
@@ -26,32 +26,36 @@ CREATE TABLE `qiu_admin`  (
   `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户登录账号',
   `password` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户密码',
   `salt` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户密码加密盐值',
+  `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态 0锁定 1有效',
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户头像',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of qiu_admin
 -- ----------------------------
-INSERT INTO `qiu_admin` VALUES (1, 'admin', '3980e4044675f6339248ee0c735c7d72', '123456');
+INSERT INTO `qiu_admin` VALUES (1, 'admin', '3980e4044675f6339248ee0c735c7d72', '123456', 1, 'admin@qiucode.cn', 'cnrhVkzwxjPwAaCfPbdc.png');
+INSERT INTO `qiu_admin` VALUES (2, 'zhangsan', '64b710a3927b0d69c386b9dbbb2259c8', '8NtuF8u', 1, 'zhangsan@qiucode.cn', 'cnrhVkzwxjPwAaCfPbdc.png');
 
 -- ----------------------------
 -- Table structure for qiu_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `qiu_menu`;
 CREATE TABLE `qiu_menu`  (
-  `MENU_ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单/按钮ID',
-  `PARENT_ID` bigint(20) NOT NULL COMMENT '上级菜单ID',
-  `MENU_NAME` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单/按钮名称',
-  `URL` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单URL',
-  `PERMS` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '权限标识',
-  `ICON` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标',
-  `TYPE` char(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型 0菜单 1按钮',
-  `SORT` bigint(20) NULL DEFAULT NULL COMMENT '排序',
-  `CREATE_TIME` datetime(0) NOT NULL COMMENT '创建时间',
-  `UPDATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`MENU_ID`) USING BTREE,
-  INDEX `qiu_menu_parenqiu_id`(`PARENT_ID`) USING BTREE,
-  INDEX `qiu_menu_menu_id`(`MENU_ID`) USING BTREE
+  `menu_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单/按钮ID',
+  `parent_id` bigint(20) NOT NULL COMMENT '上级菜单ID',
+  `menu_nameE` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单/按钮名称',
+  `url` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单URL',
+  `perms` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '权限标识',
+  `icon` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `type` char(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型 0菜单 1按钮',
+  `sort` bigint(20) NULL DEFAULT NULL COMMENT '排序',
+  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`menu_id`) USING BTREE,
+  INDEX `qiu_menu_parenqiu_id`(`parent_id`) USING BTREE,
+  INDEX `qiu_menu_menu_id`(`menu_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 179 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -136,12 +140,12 @@ INSERT INTO `qiu_menu` VALUES (178, 115, '数据权限', '/others/datapermission
 -- ----------------------------
 DROP TABLE IF EXISTS `qiu_role`;
 CREATE TABLE `qiu_role`  (
-  `ROLE_ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
-  `ROLE_NAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色名称',
-  `REMARK` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
-  `CREATE_TIME` datetime(0) NOT NULL COMMENT '创建时间',
-  `UPDATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`ROLE_ID`) USING BTREE
+  `role_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
+  `role_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色名称',
+  `remark` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
+  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -159,10 +163,10 @@ INSERT INTO `qiu_role` VALUES (80, '开发人员', '拥有代码生成模块的�
 -- ----------------------------
 DROP TABLE IF EXISTS `qiu_role_menu`;
 CREATE TABLE `qiu_role_menu`  (
-  `ROLE_ID` bigint(20) NOT NULL COMMENT '角色ID',
-  `MENU_ID` bigint(20) NOT NULL COMMENT '菜单/按钮ID',
-  INDEX `qiu_role_menu_menu_id`(`MENU_ID`) USING BTREE,
-  INDEX `qiu_role_menu_role_id`(`ROLE_ID`) USING BTREE
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  `menu_id` bigint(20) NOT NULL COMMENT '菜单/按钮ID',
+  INDEX `qiu_role_menu_menu_id`(`menu_id`) USING BTREE,
+  INDEX `qiu_role_menu_role_id`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -329,10 +333,10 @@ INSERT INTO `qiu_role_menu` VALUES (2, 178);
 -- ----------------------------
 DROP TABLE IF EXISTS `qiu_user_role`;
 CREATE TABLE `qiu_user_role`  (
-  `USER_ID` bigint(20) NOT NULL COMMENT '用户ID',
-  `ROLE_ID` bigint(20) NOT NULL COMMENT '角色ID',
-  INDEX `qiu_user_role_user_id`(`USER_ID`) USING BTREE,
-  INDEX `qiu_user_role_role_id`(`ROLE_ID`) USING BTREE
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  INDEX `qiu_user_role_user_id`(`user_id`) USING BTREE,
+  INDEX `qiu_user_role_role_id`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------

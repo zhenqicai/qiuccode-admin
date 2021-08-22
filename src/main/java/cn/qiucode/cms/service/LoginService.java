@@ -10,8 +10,17 @@ import java.util.Map;
  */
 public interface LoginService {
 
+    /**
+     * 根据用户名、密码进行登录
+     * @param userName  用户名
+     * @param password  密码
+     * @return    Map<String,Object>
+     */
     public Map<String,Object> login(String userName, String password);
 
+    /**
+     * 退出操作
+     */
     public void logout();
 
 }

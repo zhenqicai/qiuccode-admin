@@ -1,6 +1,12 @@
 package cn.qiucode.cms.controller;
 
+import cn.qiucode.cms.entity.AdminUser;
+import cn.qiucode.cms.service.AdminUserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +25,21 @@ import java.util.Map;
 @RequestMapping
 public class IndexController {
 
+    @Autowired
+    private AdminUserService adminUserService;
+
     @RequestMapping("/")
-    //@ResponseBody
     public String index(){
-        //return "admin/login";
-        //return "views/login";
         return "redirect:/login";
     }
 
     @RequestMapping("index")
-    public String toIndex(){
+    public String toIndex(Model model){
+        AdminUser currentUser = (AdminUser) SecurityUtils.getSubject().getPrincipal();
+        AdminUser principal = adminUserService.findByName(currentUser.getUsername());
+        principal.setPassword("It's a secret");
+        principal.setSalt("It's a secret");
+        model.addAttribute("user", principal);
         return "index";
     }
 
@@ -55,13 +66,39 @@ public class IndexController {
 
     @RequestMapping("/qiu/views/layout")
     public String layout(){
-
         return "qiu/views/layout";
     }
 
     @RequestMapping("/qiu/views/index")
     public String pageIndex() {
         return "/qiu/views/index";
+    }
+
+    @GetMapping("/qiu/views/system/user/add")
+    //@RequiresPermissions("user:add")
+    public String systemUserAdd() {
+        return "/qiu/views/system/user/userAdd";
+    }
+
+
+    @GetMapping("/qiu/views/system/user")
+    //@RequiresPermissions("user:view")
+    public String systemUser() {
+        return "/qiu/views/system/user/user";
+    }
+
+    @GetMapping("/qiu/views/system/user/detail/{username}")
+    //@RequiresPermissions("user:view")
+    public String systemUserDetail(@PathVariable String username, Model model) {
+        AdminUser adminUser = adminUserService.findByName(username);
+        model.addAttribute("user",adminUser);
+        return "/qiu/views/system/user/userDetail";
+    }
+
+    @GetMapping("/qiu/views/system/role")
+    //@RequiresPermissions("role:view")
+    public String systemRole() {
+        return "/qiu/views/system/role/role";
     }
 
 

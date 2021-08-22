@@ -6,7 +6,10 @@
         <id property="id" column="id" />
         <result property="username" column="username" />
         <result property="password" column="password" />
+        <result property="status" column="status" />
+        <result property="email" column="email" />
         <result property="salt" column="salt" />
+        <result property="avatar" column="avatar" />
     </resultMap>
 
     <select id="findOne" resultMap="resultAdminUser">
@@ -15,5 +18,54 @@
     <select id="findByName" resultType="cn.qiucode.cms.entity.AdminUser">
         select * from qiu_admin where username=#{username}
     </select>
+
+    <select id="getUserCount" resultType="long">
+        SELECT
+         COUNT(1)
+        FROM
+        qiu_admin u
+        LEFT JOIN qiu_user_role ur ON (u.id = ur.user_id)
+        LEFT JOIN qiu_role r ON r.role_id = ur.role_id
+        WHERE 1 = 1
+        <if test="adminUser.username != null and adminUser.username != ''">
+            AND u.username = #{adminUser.username}
+        </if>
+
+        <if test="adminUser.status != null and adminUser.status != ''">
+            AND u.status = #{adminUser.status}
+        </if>
+    </select>
+
+    <select id="findUserList" resultType="cn.qiucode.cms.entity.AdminUser" >
+        SELECT
+        u.id userId,
+        u.username,
+        u.email,
+        u.status,
+        GROUP_CONCAT(r.role_id) roleId,
+        GROUP_CONCAT(r.ROLE_NAME) roleName
+        FROM
+        qiu_admin u
+        LEFT JOIN qiu_user_role ur ON (u.id = ur.user_id)
+        LEFT JOIN qiu_role r ON r.role_id = ur.role_id
+        WHERE 1 = 1
+        <if test="adminUser.username != null and adminUser.username != ''">
+            AND u.username = #{adminUser.username}
+        </if>
+
+        <if test="adminUser.status != null and adminUser.status != ''">
+            AND u.status = #{adminUser.status}
+        </if>
+        GROUP BY
+        u.username,
+        u.id,
+        u.email,
+        u.status  limit #{pageNow},#{pageSize}
+    </select>
+
+    <insert id="saveAdminUser" parameterType="cn.qiucode.cms.entity.AdminUser">
+        INSERT INTO qiu_admin (username,password,salt,email)
+        VALUES (#{username},#{password},#{salt},#{email})
+    </insert>
 
 </mapper>

@@ -38,7 +38,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuTree<Menu> findMenus(Menu menu) {
-        return null;
+        List<Menu> menus = menuDao.selectList(menu);
+        List<MenuTree<Menu>> trees = convertMenus(menus);
+        return TreeUtil.buildMenuTree(trees);
     }
 
     @Override

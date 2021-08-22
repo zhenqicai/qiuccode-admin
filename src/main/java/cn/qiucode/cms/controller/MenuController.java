@@ -1,6 +1,7 @@
 package cn.qiucode.cms.controller;
 
 import cn.qiucode.cms.entity.AdminUser;
+import cn.qiucode.cms.entity.Menu;
 import cn.qiucode.cms.service.MenuService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -36,6 +37,14 @@ public class MenuController {
         }
         Map<String,Object> result = new HashMap<>();
         result.put("data",menuService.findUserMenus(username));
+        return result;
+    }
+
+    @GetMapping("tree")
+    public Map<String,Object> getMenuTree(Menu menu) {
+        Map<String,Object> result = new HashMap<>();
+        result.put("code",200);
+        result.put("data",menuService.findMenus(menu).getChilds());
         return result;
     }
 }
