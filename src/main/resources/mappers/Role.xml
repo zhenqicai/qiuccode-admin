@@ -43,9 +43,22 @@
 
 
     <update id="updateById" parameterType="cn.qiucode.cms.entity.Role">
-        UPDATE  qiu_role r set r.role_name = #{roleName},r.remark = #{remark},
-        r.update_time = #{updateTime}
+        UPDATE  qiu_role r SET r.role_name = #{roleName},r.remark = #{remark},
+        r.update_time = #{updateTime} WHERE role_id = #{roleId}
     </update>
+
+    <insert id="saveRole" parameterType="cn.qiucode.cms.entity.Role" useGeneratedKeys="true" keyProperty="roleId">
+        INSERT INTO qiu_role (role_name,remark,create_time)
+        VALUES (#{roleName},#{remark},#{createTime})
+    </insert>
+
+    <delete id="deleteByBatch" >
+        DELETE FROM qiu_role
+        WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
 
 
 </mapper>

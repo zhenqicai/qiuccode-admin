@@ -101,6 +101,13 @@ public class IndexController {
         return "/qiu/views/system/role/role";
     }
 
+    @GetMapping("/qiu/views/system/menu")
+    @RequiresPermissions("menu:view")
+    public String systemMenu() {
+        return "/qiu/views/system/menu/menu";
+    }
+
+
 
 
 }

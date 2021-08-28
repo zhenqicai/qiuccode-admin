@@ -37,4 +37,18 @@ public interface RoleDao {
      * @return  更新角色是否成功
      */
     public boolean updateById(Role role);
+
+    /**
+     * 新增角色信息
+     * @param role  Role对象参数
+     * @return   新增成功的角色ID
+     */
+    public Long saveRole(Role role);
+
+    /**
+     * 批量删除角色
+     * @param roleIds  待删除的角色ID集合
+     * @return   被删除的条数
+     */
+    public int deleteByBatch(@Param("roleIds") List<String> roleIds);
 }

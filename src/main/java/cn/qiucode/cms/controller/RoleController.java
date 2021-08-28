@@ -5,9 +5,7 @@ import cn.qiucode.cms.service.RoleService;
 import cn.qiucode.cms.utils.Page;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -60,4 +58,33 @@ public class RoleController {
         result.put("data",data);
         return result;
     }
+
+    @PostMapping
+    //@RequiresPermissions("role:add")
+    public Map<String,Object>  addRole(Role role) {
+        roleService.createRole(role);
+        Map<String,Object> result = new HashMap<>();
+        result.put("code",200);
+        return result;
+    }
+
+    @GetMapping("delete/{roleIds}")
+    //@RequiresPermissions("role:delete")
+    public Map<String,Object> deleteRoles(@PathVariable String roleIds) {
+        roleService.deleteRoles(roleIds);
+        Map<String,Object> result = new HashMap<>();
+        result.put("code",200);
+        return result;
+    }
+
+    @PostMapping("update")
+    //@RequiresPermissions("role:update")
+    public Map<String,Object> updateRole(Role role) {
+        roleService.updateRole(role);
+        Map<String,Object> result = new HashMap<>();
+        result.put("code",200);
+        return result;
+    }
+
+
 }

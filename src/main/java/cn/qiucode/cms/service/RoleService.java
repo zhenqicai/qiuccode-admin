@@ -20,4 +20,24 @@ public interface RoleService {
      */
     public Page<Role> rolePage(Role role, long pageNow, long pageSize);
 
+
+    /**
+     * 新增角色
+     * @param role 待新增的角色
+     */
+    public void createRole(Role role);
+
+
+    /**
+     * 修改角色
+     * @param role 待修改的角色
+     */
+    public void updateRole(Role role);
+
+    /**
+     * 删除角色
+     * @param roleIds 待删除角色的 id
+     */
+    public void deleteRoles(String roleIds);
+
 }

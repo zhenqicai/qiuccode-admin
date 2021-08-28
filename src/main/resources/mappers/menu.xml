@@ -57,7 +57,36 @@
         <if test="menuName != null and menuName != ''">
             AND m.menu_name like CONCAT('%',#{menuName},'%')
         </if>
-        ORDER BY m.sort
+        ORDER BY m.menu_id
     </select>
+
+    <select id="selectByMenuIdsList" resultMap="menu" >
+        SELECT * from qiu_menu
+        WHERE menu_id IN
+        <foreach collection="menuIds" item="menuId" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </select>
+
+    <insert id="insertMenu" parameterType="cn.qiucode.cms.entity.Menu">
+        INSERT INTO qiu_menu
+         (parent_id,menu_name,url,perms,icon,`type`,sort,create_time)
+        VALUES
+        (#{parentId},#{menuName},#{url},#{perms},#{icon},#{type},#{sort},#{createTime})
+    </insert>
+
+    <update id="updateById" parameterType="cn.qiucode.cms.entity.Menu">
+        UPDATE qiu_menu SET parent_id = #{parentId}, menu_name = #{menuName},
+        url = #{url},perms = #{perms},icon = #{icon},`type` = #{type}, sort = #{sort},
+        update_time = #{updateTime} WHERE menu_id = #{menuId}
+    </update>
+
+    <delete id="deleteBatchIds" >
+        DELETE FROM qiu_menu
+        WHERE menu_id IN
+        <foreach collection="menuIds" item="menuId" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </delete>
 
 </mapper>

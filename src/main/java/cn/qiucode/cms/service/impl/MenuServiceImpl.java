@@ -3,14 +3,17 @@ package cn.qiucode.cms.service.impl;
 import cn.qiucode.cms.dao.MenuDao;
 import cn.qiucode.cms.entity.Menu;
 import cn.qiucode.cms.entity.dto.MenuTree;
+import cn.qiucode.cms.event.UserAuthenticationUpdatedEventPublisher;
 import cn.qiucode.cms.service.MenuService;
+import cn.qiucode.cms.service.RoleMenuService;
 import cn.qiucode.cms.utils.TreeUtil;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @program: cms
@@ -23,6 +26,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuDao menuDao;
+
+    @Autowired
+    private RoleMenuService roleMenuService;
+
+    @Autowired
+    private UserAuthenticationUpdatedEventPublisher publisher;
 
     @Override
     public List<Menu> findUserPermissions(String username) {
@@ -45,22 +54,39 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> findMenuList(Menu menu) {
-        return null;
+        return menuDao.selectList(menu);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createMenu(Menu menu) {
-
+        menu.setCreateTime(new Date());
+        setMenu(menu);
+        menuDao.insertMenu(menu);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateMenu(Menu menu) {
+        menu.setUpdateTime(new Date());
+        setMenu(menu);
+        menuDao.updateById(menu);
 
+        Set<Long> userIds = roleMenuService.findUserIdByMenuIds(Lists.newArrayList(String.valueOf(menu.getMenuId())));
+        if(userIds != null && !userIds.isEmpty()){
+            publisher.publishEvent(userIds);
+        }
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteMenus(String menuIds) {
-
+        List<String> menuIdList = Arrays.asList(menuIds.split(","));
+        delete(menuIdList);
+        Set<Long> userIds = roleMenuService.findUserIdByMenuIds(menuIdList);
+        if(userIds != null && !userIds.isEmpty()){
+            publisher.publishEvent(userIds);
+        }
     }
 
     private List<MenuTree<Menu>> convertMenus(List<Menu> menus) {
@@ -76,5 +102,30 @@ public class MenuServiceImpl implements MenuService {
             trees.add(tree);
         });
         return trees;
+    }
+    private void setMenu(Menu menu) {
+        if (menu.getParentId() == null) {
+            menu.setParentId(0L);
+        }
+        if ("1".equals(menu.getType())) {
+            menu.setUrl(null);
+            menu.setIcon(null);
+        }
+    }
+
+    private void delete(List<String> menuIds) {
+        List<String> list = new ArrayList<>(menuIds);
+        menuDao.deleteBatchIds(menuIds);
+
+        List<Menu> menus = menuDao.selectByMenuIdsList(menuIds);
+        if(menus != null && !menus.isEmpty()){
+            List<String> menuIdList = new ArrayList<>();
+            menus.forEach(m -> menuIdList.add(String.valueOf(m.getMenuId())));
+            list.addAll(menuIdList);
+            roleMenuService.deleteRoleMenusByMenuId(list);
+            delete(menuIdList);
+        } else {
+            roleMenuService.deleteRoleMenusByMenuId(list);
+        }
     }
 }
