@@ -1,6 +1,7 @@
 package cn.qiucode.cms.entity;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @program: cms
@@ -12,7 +13,7 @@ public class AdminUser implements Serializable {
 
     private static final long serialVersionUID = 6476614928897122932L;
 
-    private Integer id;
+    private Long id;
     private String username;//后台管理员名称
     private String password;//后台管理员密码
     private String salt;    //盐值
@@ -22,11 +23,23 @@ public class AdminUser implements Serializable {
 
     private String avatar; //用户头像
 
-    public Integer getId() {
+    /**
+     * 以下数据库不关联
+     */
+    private String roleId;  //角色 ID
+
+    private String roleName;  //角色
+
+    private Set<String> stringPermissions;
+
+    private Set<String> roles;
+
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -76,5 +89,37 @@ public class AdminUser implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Set<String> getStringPermissions() {
+        return stringPermissions;
+    }
+
+    public void setStringPermissions(Set<String> stringPermissions) {
+        this.stringPermissions = stringPermissions;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }

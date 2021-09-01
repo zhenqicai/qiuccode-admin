@@ -42,6 +42,18 @@
     </select>
 
 
+    <select id="findUserRole" resultMap="resultRole">
+        SELECT
+            r.*
+        FROM
+            qiu_role r
+        LEFT JOIN qiu_user_role ur ON (r.role_id = ur.role_id)
+        LEFT JOIN qiu_admin u ON (u.id = ur.user_id)
+        WHERE
+            u.username = #{username}
+    </select>
+
+
     <update id="updateById" parameterType="cn.qiucode.cms.entity.Role">
         UPDATE  qiu_role r SET r.role_name = #{roleName},r.remark = #{remark},
         r.update_time = #{updateTime} WHERE role_id = #{roleId}

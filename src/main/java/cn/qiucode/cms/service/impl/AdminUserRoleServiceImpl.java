@@ -29,6 +29,11 @@ public class AdminUserRoleServiceImpl implements AdminUserRoleService {
     }
 
     @Override
+    public void deleteUserRolesByUserId(List<String> userIds) {
+        adminUserRoleDao.batchDeleteByUserIds(userIds);
+    }
+
+    @Override
     public Set<Long> findUserIdByRoleId(Long roleId) {
         List<AdminUserRole> userRoles = adminUserRoleDao.selectByRoleIdList(roleId);
         if (CollectionUtils.isNotEmpty(userRoles)) {
@@ -44,5 +49,10 @@ public class AdminUserRoleServiceImpl implements AdminUserRoleService {
             return userRoles.stream().map(AdminUserRole::getUserId).collect(Collectors.toSet());
         }
         return null;
+    }
+
+    @Override
+    public void saveBatch(List<AdminUserRole> adminUserRoles) {
+        adminUserRoleDao.batchSave(adminUserRoles);
     }
 }

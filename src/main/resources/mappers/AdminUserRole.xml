@@ -15,6 +15,14 @@
         </foreach>
     </delete>
 
+    <delete id="batchDeleteByUserIds">
+        DELETE FROM qiu_user_role
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
     <select id="selectList" resultMap="resultUserRole" >
         SELECT user_id,role_id FROM qiu_user_role
         WHERE role_id IN
@@ -22,5 +30,13 @@
             #{roleId}
         </foreach>
     </select>
+
+    <insert id="batchSave" parameterType="java.util.List" >
+        INSERT INTO qiu_user_role ( user_id,role_id)
+        VALUES
+        <foreach collection="list"  index="index" item="item" separator=",">
+            (#{item.userId},#{item.roleId})
+        </foreach>
+    </insert>
 
 </mapper>

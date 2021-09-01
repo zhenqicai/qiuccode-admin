@@ -52,4 +52,32 @@ public interface AdminUserDao {
      * @return      是否创建成功
      */
     public boolean saveAdminUser(AdminUser user);
+
+    /**
+     * 根据用户ID批量删除
+     * @param userIds  用户ID字符串集合
+     * @return  是否批量删除成功
+     */
+    public boolean deleteBatchIds(@Param("userIds") List<String> userIds);
+
+    /**
+     * g更新用户
+     * @param user  待更新的用户对象
+     * @return  是否更新成功
+     */
+    public boolean updateById(AdminUser user);
+
+    /**
+     * 批量更新用户密码
+     * @param user  用户数据
+     * @return  是否更新成功
+     */
+    public boolean batchUpdate(List<AdminUser> user);
+
+    /**
+     * 根据用户名更新密码
+     * @param user  用户
+     * @return    是否更新成功
+     */
+    public boolean updatePasswordByUserName(AdminUser user);
 }

@@ -31,6 +31,13 @@ public interface RoleDao {
      */
     public List<Role> findRoleList(@Param("role") Role role, @Param("pageNow") long pageNow, @Param("pageSize") long pageSize);
 
+
+    /**
+     * 通过用户名查找用户角色
+     * @param username 用户名
+     * @return 用户角色集合
+     */
+    public List<Role> findUserRole(String username);
     /**
      * 根据ID更新角色
      * @param role  角色参数对象

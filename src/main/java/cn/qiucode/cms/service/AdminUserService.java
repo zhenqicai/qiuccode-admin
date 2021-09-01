@@ -43,4 +43,35 @@ public interface AdminUserService {
      * @param user 需创建的用户对象参数
      */
     public void  createAdminUser(AdminUser user);
+
+    /**
+     * 删除用户
+     * @param userIds 用户 id数组
+     */
+    public void deleteUsers(String[] userIds);
+
+    /**
+     * 修改用户
+     * @param  user
+     */
+    public void updateUser(AdminUser user);
+
+    /**
+     * 重置密码
+     * @param usernames 用户名数组
+     */
+    public void resetPassword(String[] usernames);
+
+    /**
+     * 更新密码
+     * @param username     用户名
+     * @param newPassword  新密码
+     */
+    public void updatePassword(String username, String newPassword);
+
+    /**
+     * 获取用户角色和权限集
+     * @param user 用户
+     */
+    public void doGetUserAuthorizationInfo(AdminUser user);
 }

@@ -3,6 +3,8 @@ package cn.qiucode.cms.service;
 import cn.qiucode.cms.entity.Role;
 import cn.qiucode.cms.utils.Page;
 
+import java.util.List;
+
 /**
  * @program: cms
  * @description: 角色Service
@@ -40,4 +42,10 @@ public interface RoleService {
      */
     public void deleteRoles(String roleIds);
 
+    /**
+     * 通过用户名查找用户角色
+     * @param username 用户名
+     * @return 用户角色集合
+     */
+    public List<Role> findUserRole(String username);
 }

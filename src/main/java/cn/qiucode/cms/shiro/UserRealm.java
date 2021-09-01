@@ -33,12 +33,10 @@ public class UserRealm extends AuthorizingRealm {
         AdminUser user = (AdminUser) principals.getPrimaryPrincipal();
 
         //后续设置角色
-        /* for(SysRole role:userInfo.getRoleList()){
-            authorizationInfo.addRole(role.getRole());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
-            }
-        } */
+        adminUserService.doGetUserAuthorizationInfo(user);
+
+        authorizationInfo.setRoles(user.getRoles());
+        authorizationInfo.setStringPermissions(user.getStringPermissions());
 
         return authorizationInfo;
     }

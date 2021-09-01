@@ -40,7 +40,7 @@ public class RoleController {
     } */
 
     @GetMapping("list")
-    //@RequiresPermissions("role:view")
+    @RequiresPermissions("role:view")
     public Map<String,Object> roleList(Role role, HttpServletRequest request) {
 
         long pageNum = request.getParameter("pageNum") == null ? 0L : Long.parseLong(request.getParameter("pageNum"));
@@ -60,7 +60,7 @@ public class RoleController {
     }
 
     @PostMapping
-    //@RequiresPermissions("role:add")
+    @RequiresPermissions("role:add")
     public Map<String,Object>  addRole(Role role) {
         roleService.createRole(role);
         Map<String,Object> result = new HashMap<>();
@@ -69,7 +69,7 @@ public class RoleController {
     }
 
     @GetMapping("delete/{roleIds}")
-    //@RequiresPermissions("role:delete")
+    @RequiresPermissions("role:delete")
     public Map<String,Object> deleteRoles(@PathVariable String roleIds) {
         roleService.deleteRoles(roleIds);
         Map<String,Object> result = new HashMap<>();
@@ -78,7 +78,7 @@ public class RoleController {
     }
 
     @PostMapping("update")
-    //@RequiresPermissions("role:update")
+    @RequiresPermissions("role:update")
     public Map<String,Object> updateRole(Role role) {
         roleService.updateRole(role);
         Map<String,Object> result = new HashMap<>();

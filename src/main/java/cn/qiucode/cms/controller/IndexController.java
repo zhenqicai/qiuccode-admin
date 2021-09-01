@@ -75,20 +75,20 @@ public class IndexController {
     }
 
     @GetMapping("/qiu/views/system/user/add")
-    //@RequiresPermissions("user:add")
+    @RequiresPermissions("user:add")
     public String systemUserAdd() {
         return "/qiu/views/system/user/userAdd";
     }
 
 
     @GetMapping("/qiu/views/system/user")
-    //@RequiresPermissions("user:view")
+    @RequiresPermissions("user:view")
     public String systemUser() {
         return "/qiu/views/system/user/user";
     }
 
     @GetMapping("/qiu/views/system/user/detail/{username}")
-    //@RequiresPermissions("user:view")
+    @RequiresPermissions("user:view")
     public String systemUserDetail(@PathVariable String username, Model model) {
         AdminUser adminUser = adminUserService.findByName(username);
         model.addAttribute("user",adminUser);
@@ -96,7 +96,7 @@ public class IndexController {
     }
 
     @GetMapping("/qiu/views/system/role")
-    //@RequiresPermissions("role:view")
+    @RequiresPermissions("role:view")
     public String systemRole() {
         return "/qiu/views/system/role/role";
     }
