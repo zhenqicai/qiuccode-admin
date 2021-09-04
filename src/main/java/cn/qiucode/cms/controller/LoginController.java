@@ -53,9 +53,9 @@ public class LoginController {
         return res;
     }
 
-    @RequestMapping("/admin/logout")
+    @RequestMapping("/logout")
     public String logOut(HttpSession session) {
         loginService.logout();
-        return "admin/login";
+        return "qiu/views/login";
     }
 }

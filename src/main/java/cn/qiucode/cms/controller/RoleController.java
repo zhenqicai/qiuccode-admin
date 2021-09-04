@@ -24,20 +24,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    /*@GetMapping
+    @GetMapping
     public Map<String,Object> getAllRoles(Role role) {
         Map<String,Object> result = new HashMap<>();
         result.put("code",200);
-
-        Map<String,Object> data = new HashMap<>();
-
-        roleService.rolePage()
-        data.put("rows",userPage.getData());
-        data.put("total",userPage.getTotalCount());
-
-        result.put("data",data);
+        result.put("data",roleService.findRoles(role));
         return result;
-    } */
+    }
 
     @GetMapping("list")
     @RequiresPermissions("role:view")

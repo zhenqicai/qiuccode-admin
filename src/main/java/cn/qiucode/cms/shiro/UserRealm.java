@@ -27,7 +27,6 @@ public class UserRealm extends AuthorizingRealm {
     //权限信息，包括角色以及权限
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         //如果授权部分没有传入User对象，这里只能取到userName
         //也就是SimpleAuthenticationInfo构造的时候第一个参数传递需要AdminUser对象
         AdminUser user = (AdminUser) principals.getPrimaryPrincipal();
@@ -35,10 +34,10 @@ public class UserRealm extends AuthorizingRealm {
         //后续设置角色
         adminUserService.doGetUserAuthorizationInfo(user);
 
-        authorizationInfo.setRoles(user.getRoles());
-        authorizationInfo.setStringPermissions(user.getStringPermissions());
-
-        return authorizationInfo;
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.setRoles(user.getRoles());
+        simpleAuthorizationInfo.setStringPermissions(user.getStringPermissions());
+        return simpleAuthorizationInfo;
     }
 
     /*主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。*/

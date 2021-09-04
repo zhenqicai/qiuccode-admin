@@ -1,15 +1,21 @@
 <style>
-    #user-add {
+    #user-update {
         padding: 20px 25px 25px 0;
     }
 </style>
-<div class="layui-fluid" id="user-add">
-    <form class="layui-form" action="" lay-filter="user-add-form">
+<div class="layui-fluid" id="user-update">
+    <form class="layui-form" action="" lay-filter="user-update-form">
+        <div class="layui-form-item qiu-hide">
+            <label class="layui-form-label qiu-form-item-require">用户id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="id" data-th-value="${user.id}">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label qiu-form-item-require">用户名：</label>
             <div class="layui-input-block">
-                <input type="text" name="username" minlength="2" maxlength="10" lay-verify="range|username"
-                       autocomplete="off" class="layui-input">
+                <input type="text" name="username" minlength="4" maxlength="10" data-th-id="${user.id}"
+                       lay-verify="range|username" autocomplete="off" class="layui-input" readonly>
             </div>
         </div>
 
@@ -22,56 +28,52 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label qiu-form-item-require">角色：</label>
-            <div class="layui-input-block" id="user-add-role"></div>
+            <div class="layui-input-block" id="user-update-role"></div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">部门：</label>
-            <div class="layui-input-block" id="user-add-dept"></div>
-        </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label qiu-form-item-require">状态：</label>
             <div class="layui-input-block">
-                <input type="radio" name="status" value="1" title="有效" checked="">
+                <input type="radio" name="status" value="1" title="有效">
                 <input type="radio" name="status" value="0" title="禁用">
             </div>
         </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">数据权限：</label>
-            <div class="layui-input-block" id="user-add-data-permission"></div>
-        </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">备注：</label>
             <div class="layui-input-block">
-                <textarea name="description" maxlength="100" class="layui-textarea"></textarea>
+                <textarea name="description" maxlength="100" class="layui-textarea">
+                </textarea>
             </div>
         </div>
         <div class="layui-form-item qiu-hide">
-            <button class="layui-btn" lay-submit="" lay-filter="user-add-form-submit" id="submit"></button>
-            <button type="reset" class="layui-btn" id="reset"></button>
+            <button class="layui-btn" lay-submit="" lay-filter="user-update-form-submit" id="submit"></button>
         </div>
     </form>
 </div>
 
-<script>
-    layui.use(['qiu', 'form', 'validate', 'xmSelect'], function () {
+<script data-th-inline="javascript">
+    layui.use(['qiu', 'form', 'xmSelect', 'validate'], function () {
         let $ = layui.$,
             qiu = layui.qiu,
             layer = layui.layer,
             form = layui.form,
             xmSelect = layui.xmSelect,
+            user = [[${user}]],
             validate = layui.validate,
             roleXmSelect;
 
         form.verify(validate);
         form.render();
 
+        initUserValue();
+
         roleXmSelect = xmSelect.render({
-            el: '#user-add-role',
+            el: '#user-update-role',
             toolbar: {show: true},
             name: 'roleId',
             theme: {
-                color: '#52c41a',
+                color: '#32c787',
             },
             prop: {
                 name: 'roleName',
@@ -85,16 +87,30 @@
                 data: data.data,
                 autoRow: true,
             })
+            roleXmSelect.setValue(user.roleId.split(','));
         });
 
-        form.on('submit(user-add-form-submit)', function (data) {
-            /*if (!data.field.roleId) {
+        function initUserValue() {
+            form.val("user-update-form", {
+                "username": user.username,
+                "email": user.email,
+                "status": user.status,
+                "description": user.description
+            });
+        }
+
+        form.on('submit(user-update-form-submit)', function (data) {
+            if (!data.field.roleId) {
                 qiu.alert.warn('请选择用户角色');
                 return false;
-            } */
-            qiu.post(ctx + 'user', data.field, function () {
+            }
+            if (qiu.nativeEqual(data.field, user)) {
+                qiu.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            qiu.post(ctx + 'user/update', data.field, function () {
                 layer.closeAll();
-                qiu.alert.success('新增用户成功，初始密码为 123456');
+                qiu.alert.success(user.username + ' 用户数据修改成功');
                 $('#qiu-user').find('#query').click();
             });
             return false;

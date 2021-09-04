@@ -38,6 +38,7 @@ public class AdminUserController {
     }
 
     @GetMapping("list")
+    @RequiresPermissions("user:view")
     public Map<String,Object> userList(AdminUser user, HttpServletRequest request){
         long pageNum = request.getParameter("pageNum") == null ? 0L : Long.parseLong(request.getParameter("pageNum"));
         long pageSize = request.getParameter("pageSize") == null ? 10L : Long.parseLong(request.getParameter("pageSize"));

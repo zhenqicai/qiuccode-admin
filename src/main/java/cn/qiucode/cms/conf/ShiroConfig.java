@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import cn.qiucode.cms.shiro.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.CacheManager;
@@ -39,31 +40,32 @@ public class ShiroConfig {
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		//拦截器.
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+
+		/* anon-url: /test/**,/febs/**,/img/**,/layui/**,/json/**,/images/captcha,/register
+		 login-url: /login
+		 success-url: /index
+		 logout-url: /logout
+		 unauthorized-url: /unauthorized */
+
+		// 登录的 url
+		shiroFilterFactoryBean.setLoginUrl("/login");
+		// 登录成功后跳转的 url
+		shiroFilterFactoryBean.setSuccessUrl("/index");
+		// 未授权 url
+		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+
 		// 配置不会被拦截的链接 顺序判断
-		//filterChainDefinitionMap.put("/admin/**", "anon");
-		filterChainDefinitionMap.put("/login", "anon");
-		filterChainDefinitionMap.put("/static/**", "anon");
 		filterChainDefinitionMap.put("/qiu/**", "anon");
 		filterChainDefinitionMap.put("/layui/**", "anon");
-		filterChainDefinitionMap.put("/layout/**", "anon");
+		filterChainDefinitionMap.put("/json/**", "anon");
 		filterChainDefinitionMap.put("/favicon.ico", "anon");
 
-		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-		filterChainDefinitionMap.put("/logout", "logout");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		//<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-		filterChainDefinitionMap.put("/index", "authc");
-		filterChainDefinitionMap.put("/admin/**", "authc");
-		filterChainDefinitionMap.put("/menu/**", "authc");
-		filterChainDefinitionMap.put("/system/**", "authc");
-
-		// 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-		shiroFilterFactoryBean.setLoginUrl("/login");
-		// 登录成功后要跳转的链接
-		shiroFilterFactoryBean.setSuccessUrl("/index");
-
-		//未授权界面;
-		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+		// 配置退出过滤器，其中具体的退出代码 Shiro已经替我们实现了
+		filterChainDefinitionMap.put("/logout", "logout");
+		// 除上以外所有 url都必须认证通过才可以访问，未通过认证自动访问 LoginUrl
+		filterChainDefinitionMap.put("/**", "user");
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
@@ -177,75 +179,14 @@ public class ShiroConfig {
 		//r.setWarnLogCategory("example.MvcLogger");     // No default
 		return r;
 	}
+
+	/**
+	 * 用于开启 Thymeleaf 中的 shiro 标签的使用
+	 * @return ShiroDialect shiro 方言对象
+	 */
+	@Bean
+	public ShiroDialect shiroDialect() {
+		return new ShiroDialect();
+	}
 }
 
-
-
-
-/*@Configuration
-@Import(ShiroManager.class)
-public class ShiroConfig {
-
-	@Bean(name = "realm")
-	@DependsOn("lifecycleBeanPostProcessor")
-	@ConditionalOnMissingBean
-	public Realm realm() {
-		return new UserRealm();
-	}
-	
-	 //**
-     //* 用户授权信息Cache
-     //*
-    @Bean(name = "shiroCacheManager")
-    @ConditionalOnMissingBean
-    public CacheManager cacheManager() {
-        return new MemoryConstrainedCacheManager();
-    }
-
-    @Bean(name = "securityManager")
-    @ConditionalOnMissingBean
-    public DefaultSecurityManager securityManager() {
-        DefaultSecurityManager sm = new DefaultWebSecurityManager();
-        sm.setCacheManager(cacheManager());
-        return sm;
-    }
-
-	@Bean(name = "shiroFilter")
-	@DependsOn("securityManager")
-	@ConditionalOnMissingBean
-	public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultSecurityManager securityManager, Realm realm) {
-		securityManager.setRealm(realm);
-
-		ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
-		shiroFilter.setSecurityManager(securityManager);
-		shiroFilter.setLoginUrl("/login");//默认也是这个  
-		shiroFilter.setSuccessUrl("/main/indexMain");
-		shiroFilter.setUnauthorizedUrl("/common/403");
-		Map<String, String> filterChainDefinitionMap = new HashMap<String, String>();
-		filterChainDefinitionMap.put("/static/**", "anon");
-		filterChainDefinitionMap.put("/api/**", "anon");
-		filterChainDefinitionMap.put("/anno/**", "anon");
-		filterChainDefinitionMap.put("/logout", "anon");
-		//动态授权的资源
-		filterChainDefinitionMap.put("/sys/user/index", "perms[system:user:index]");
-		filterChainDefinitionMap.put("/sys/user/add", "perms[system:user:add]");
-		filterChainDefinitionMap.put("/sys/user/edit*", "perms[system:user:edit]");
-		filterChainDefinitionMap.put("/sys/user/deleteBatch", "perms[system:user:deleteBatch]");
-		filterChainDefinitionMap.put("/sys/user/grant/**", "perms[system:user:grant]");
-		
-		filterChainDefinitionMap.put("/sys/role/index", "perms[system:role:index]");
-		filterChainDefinitionMap.put("/sys/role/add", "perms[system:role:add]");
-		filterChainDefinitionMap.put("/sys/role/edit*", "perms[system:role:edit]");
-		filterChainDefinitionMap.put("/sys/role/deleteBatch", "perms[system:role:deleteBatch]");
-		filterChainDefinitionMap.put("/sys/role/grant/**", "perms[system:role:grant]");
-		
-		filterChainDefinitionMap.put("/sys/resource/index", "perms[system:resource:index]");
-		filterChainDefinitionMap.put("/sys/resource/add", "perms[system:resource:add]");
-		filterChainDefinitionMap.put("/sys/resource/edit*", "perms[system:resource:edit]");
-		filterChainDefinitionMap.put("/sys/resource/deleteBatch", "perms[system:resource:deleteBatch]");
-		
-		filterChainDefinitionMap.put("/sys/**", "authc");
-		shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
-		return shiroFilter;
-	}
-}*/

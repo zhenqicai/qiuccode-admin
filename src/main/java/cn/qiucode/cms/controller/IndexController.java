@@ -37,9 +37,12 @@ public class IndexController {
     public String toIndex(Model model){
         AdminUser currentUser = (AdminUser) SecurityUtils.getSubject().getPrincipal();
         AdminUser principal = adminUserService.findByName(currentUser.getUsername());
+        adminUserService.doGetUserAuthorizationInfo(principal);
         principal.setPassword("It's a secret");
         principal.setSalt("It's a secret");
         model.addAttribute("user", principal);
+        model.addAttribute("permissions", principal.getStringPermissions());
+        model.addAttribute("roles", principal.getRoles());
         return "index";
     }
 
@@ -64,30 +67,30 @@ public class IndexController {
         return result;
     }
 
-    @RequestMapping("/qiu/views/layout")
+    @RequestMapping("qiu/views/layout")
     public String layout(){
         return "qiu/views/layout";
     }
 
-    @RequestMapping("/qiu/views/index")
+    @RequestMapping("qiu/views/index")
     public String pageIndex() {
         return "/qiu/views/index";
     }
 
-    @GetMapping("/qiu/views/system/user/add")
+    @GetMapping("qiu/views/system/user/add")
     @RequiresPermissions("user:add")
     public String systemUserAdd() {
         return "/qiu/views/system/user/userAdd";
     }
 
 
-    @GetMapping("/qiu/views/system/user")
+    @GetMapping("qiu/views/system/user")
     @RequiresPermissions("user:view")
     public String systemUser() {
         return "/qiu/views/system/user/user";
     }
 
-    @GetMapping("/qiu/views/system/user/detail/{username}")
+    @GetMapping("qiu/views/system/user/detail/{username}")
     @RequiresPermissions("user:view")
     public String systemUserDetail(@PathVariable String username, Model model) {
         AdminUser adminUser = adminUserService.findByName(username);
@@ -95,19 +98,30 @@ public class IndexController {
         return "/qiu/views/system/user/userDetail";
     }
 
-    @GetMapping("/qiu/views/system/role")
+    @GetMapping("qiu/views/system/user/update/{username}")
+    @RequiresPermissions("user:update")
+    public String systemUserUpdate(@PathVariable String username, Model model) {
+        resolveUserModel(username, model);
+        return "/qiu/views/system/user/userUpdate";
+    }
+
+    @GetMapping("qiu/views/system/role")
     @RequiresPermissions("role:view")
     public String systemRole() {
         return "/qiu/views/system/role/role";
     }
 
-    @GetMapping("/qiu/views/system/menu")
+    @GetMapping("qiu/views/system/menu")
     @RequiresPermissions("menu:view")
     public String systemMenu() {
         return "/qiu/views/system/menu/menu";
     }
 
 
+    private void resolveUserModel(String username, Model model) {
+        AdminUser user = adminUserService.findByName(username);
+        model.addAttribute("user", user);
 
+    }
 
 }

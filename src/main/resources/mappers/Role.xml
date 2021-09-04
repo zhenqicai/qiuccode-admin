@@ -53,6 +53,15 @@
             u.username = #{username}
     </select>
 
+    <select id="findRoles" resultMap="resultRole" parameterType="cn.qiucode.cms.entity.Role">
+        SELECT role_id,role_name,remark,create_time,update_time
+        FROM qiu_role
+        WHERE 1=1
+        <if test="roleName != null and roleName != ''">
+         AND role_name LIKE CONCAT('%',#{roleName,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
 
     <update id="updateById" parameterType="cn.qiucode.cms.entity.Role">
         UPDATE  qiu_role r SET r.role_name = #{roleName},r.remark = #{remark},

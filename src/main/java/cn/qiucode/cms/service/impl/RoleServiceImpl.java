@@ -98,6 +98,11 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findUserRole(username);
     }
 
+    @Override
+    public List<Role> findRoles(Role role) {
+        return roleDao.findRoles(role);
+    }
+
     /**
      * 在新增角色时，对应的在角色菜单关联表批量新增数据
      * @param role   新增的角色数据

@@ -106,7 +106,7 @@
     <span shiro:lacksPermission="user:view,user:update,user:delete">
         <span class="layui-badge-dot qiu-bg-orange"></span> 无权限
     </span>
-    <a lay-event="detail" ><i
+    <a lay-event="detail" shiro:hasPermission="user:view"><i
             class="layui-icon qiu-edit-area qiu-green">&#xe7a5;</i></a>
     <a lay-event="edit" shiro:hasPermission="user:update"><i
             class="layui-icon qiu-edit-area qiu-blue">&#xe7a4;</i></a>
@@ -127,8 +127,7 @@
             sortObject = {field: 'createTime', type: null},
             tableIns,
             createTimeFrom,
-            createTimeTo,
-            deptXmlSelect;
+            createTimeTo;
 
         form.render();
 
@@ -209,36 +208,6 @@
             }]
         });
 
-        deptXmlSelect = xmSelect.render({
-            el: '#dept',
-            model: {label: {type: 'text'}},
-            tree: {
-                show: true,
-                strict: false,
-                showLine: false,
-                clickCheck: true,
-                expandedKeys: [-1],
-            },
-            name: 'deptId',
-            theme: {
-                color: '#52c41a',
-            },
-            prop: {
-                value: 'id'
-            },
-            height: 'auto',
-            on: function(data){
-                if(data.isAdd){
-                    return data.change.slice(0, 1)
-                }
-            }
-        });
-
-        /*qiu.get(ctx + 'dept/select/tree', null, function (data) {
-            deptXmlSelect.update(
-                data
-            )
-        }); */
 
         table.on('tool(userTable)', function (obj) {
             let data = obj.data,
@@ -286,7 +255,6 @@
         $reset.on('click', function () {
             $searchForm[0].reset();
             sortObject.type = 'null';
-            deptXmlSelect.setValue(['']);
             createTimeTo = null;
             createTimeFrom = null;
             tableIns.reload({where: getQueryParams(true), page: {curr: 1}, initSort: sortObject});
@@ -308,12 +276,8 @@
         }
 
         function getQueryParams(flag) {
-            deptId = deptXmlSelect.getValue('valueStr');
-            if (flag) {
-                deptId = '';
-            }
+
             let params = $searchForm.serializeJson();
-            params.deptId = deptId;
             let createTime = params.time;
             if (createTime) {
                 createTimeFrom = createTime.split(' - ')[0];
